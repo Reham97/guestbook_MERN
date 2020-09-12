@@ -5,6 +5,11 @@ const app =express()
 const PORT = 5000
 const {MONGOURI}=require('./keys')
 
+require('./models/user')
+
+app.use(express.json())
+app.use(require('./routes/auth'));
+
 mongoose.connect(MONGOURI,{
     useNewUrlParser:true,
     useUnifiedTopology:true
@@ -19,9 +24,6 @@ mongoose.connection.on('error',()=>{
 })
 
 
-app.get('/',(req,res)=>{
-    res.send("hello")
-})
 
 app.listen(PORT,()=>{
     console.log("Server is Running on ",PORT)
