@@ -11,20 +11,15 @@ const eventSchema = new mongoose.Schema({
     },
     photo:{
         type:String,
-        required:true
     },
     postedBy:{
-       type:ObjectId,
-       ref:"User"
-    },
-    comments:[{
-        text:String,
-        postedBy:{type:ObjectId,ref:"User"},
-        responses:[{
-            text:String,
-            postedBy:{type:ObjectId,ref:"User"},
-        }]
-    }],
+        type:ObjectId,
+        ref:"User"
+     },
+     comments:[{
+        type:ObjectId,
+        ref:"Comment"
+     }],
 
 },{timestamps:true})
 
