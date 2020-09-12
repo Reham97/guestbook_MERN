@@ -1,11 +1,13 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { useHistory } from 'react-router-dom'
 import materialize from 'materialize-css'
+import {UserContext} from '../../App'
 
 const Signin = () => {
   const history = useHistory()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const {state,dispatch} = useContext(UserContext)
 
   const postData = () => {
     
@@ -25,8 +27,9 @@ const Signin = () => {
           materialize.toast({ html: data.error, classes: "#c62828 red darken-3" })
         }
         else {
-          localStorage.setItem("insta-jwt",data.token)
-          localStorage.setItem("insta-user",JSON.stringify(data.user))
+          localStorage.setItem("guestBook-jwt",data.token)
+          localStorage.setItem("guestBook-user",JSON.stringify(data.user))
+          dispatch({type:"USER",payload:data.user})
           materialize.toast({ html: "signedin success", classes: "#43a047 green darken-1" })
           history.push('/')
         }
