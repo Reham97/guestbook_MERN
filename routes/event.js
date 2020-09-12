@@ -125,4 +125,42 @@ router.delete('/deleteevent/:eventId', reqLogin, (req, res) => {
         })
 })
 
+router.delete('/deletecomment/:commentId', reqLogin, (req, res) => {
+    Comment.findOne({ _id: req.params.commentId })
+        .populate("postedBy", "_id")
+        .exec((err, comment) => {
+            if (err || !comment) {
+                return res.status(422).json({ error: err })
+            }
+            if (comment.postedBy._id.toString() === req.user._id.toString()) {
+                comment.remove()
+                    .then(result => {
+                        res.json(result)
+                    }).catch(err => {
+                        console.log(err)
+                    })
+            }
+        })
+})
+
+router.put('/updatecomment/:commentId', reqLogin, (req, res) => {
+    Comment.findOne({ _id: req.params.commentId })
+        .populate("postedBy", "_id")
+        .exec((err, comment) => {
+            if (err || !comment) {
+                return res.status(422).json({ error: err })
+            }
+            if (comment.postedBy._id.toString() === req.user._id.toString()) {
+                comment.text= req.body.commentText
+                comment.save()
+                    .then(result => {
+                        res.json(result)
+                    }).catch(err => {
+                        console.log(err)
+                    })
+            }
+        })
+})
+
+
 module.exports = router
