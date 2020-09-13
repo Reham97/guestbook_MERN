@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import materialize from 'materialize-css'
-// import {IMGURI} from '../../keys'
+import {IMGURI} from '../../keys'
 
 const CreateMessage = () => {
     const history = useHistory()
@@ -45,7 +45,7 @@ const CreateMessage = () => {
         data.append("file", image)
         data.append("upload_preset", "guestBook-mern")
         data.append("cloud_name", "software1997")
-        fetch(process.env.IMGURI, {
+        fetch(process.env.IMGURI||IMGURI, {
             method: "post",
             body: data
         })

@@ -2,7 +2,7 @@ const express = require('express')
 const bcrypt = require('bcryptjs')
 const mongoose = require('mongoose')
 const jwt = require('jsonwebtoken')
-// const {JWT_SECRET}=require('../keys')
+const {JWT_SECRET}=require('../keys')
 const reqLogin = require('../middleware/reqLogin')
 
 const router = express.Router()
@@ -59,7 +59,7 @@ router.post('/signin',(req,res)=>{
         .then(doMatch=>{
             if(doMatch){
                 // res.json({message:"successfully signed in"})
-            const token = jwt.sign({_id:savedUser._id},process.env.JWT_SECRET)
+            const token = jwt.sign({_id:savedUser._id},process.env.JWT_SECRET ||JWT_SECRET)
             const {_id,name,email} = savedUser
             res.json({token,user:{_id,name,email}})
             }
