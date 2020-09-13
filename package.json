@@ -4,13 +4,8 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "install-client": "cd client && npm install",
-    "heroku-postbuild": "cd client && npm install --only=dev && npm install && npm run build",
-   "start": "node app.js",
-    "client": "cd client && npm start",
-    "server": "nodemon app.js",
-    "dev": "concurrently -n 'server,client' -c 'blue,green'  \"nodemon app.js\" \"npm run client\""
+    "start": "node app.js",
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client"
   },
   "author": "",
   "license": "ISC",
