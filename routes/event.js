@@ -28,15 +28,15 @@ router.post('/createevent', reqLogin, (req, res) => {
 
 router.get('/allevents', reqLogin, (req, res) => {
     Event.find()
-    .populate('postedBy','_id name')
-    .populate({
-        path: 'comments',
-        populate: { path: 'comments', model: 'Comment', select: '_id text' }
-    }).populate({
-        path: 'comments',
-        populate: { path: 'postedBy', model: 'User', select: '_id name' },
+        .populate('postedBy', '_id name')
+        .populate({
+            path: 'comments',
+            populate: { path: 'comments', model: 'Comment', select: '_id text' }
+        }).populate({
+            path: 'comments',
+            populate: { path: 'postedBy', model: 'User', select: '_id name' },
 
-    })
+        })
         .then((events) => {
             res.json({ events })
         }).catch(err => {

@@ -61,6 +61,27 @@ const Home = () => {
       })
   }
 
+  const deleteComment = (commentid) => {
+    fetch(`/deletecomment/${commentid}`, {
+      method: "delete",
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("guestBook-jwt")
+      }
+    }).then(res => res.json())
+      .then(result => {
+        fetch('/allevents', {
+          headers: {
+            "Authorization": "Bearer " + localStorage.getItem("guestBook-jwt")
+          }
+        }).then(res => res.json())
+          .then(result => {
+            console.log(result)
+            setData(result.events)
+          })
+      })
+  }
+
+
   return (
     <div className="home">
       {
@@ -99,7 +120,19 @@ const Home = () => {
                 {
                   item.comments.map(record => {
                     return (
-                      <h6 key={record._id}><span style={{ fontWeight: "500" }}>({record.postedBy.name}) </span> {record.text}</h6>
+                      <h6 key={record._id}><span style={{ fontWeight: "500" }}>({record.postedBy.name}) 
+                         {record.postedBy._id == state._id
+                ? <i className="material-icons hand" style={{}}
+                  onClick={() => deleteComment(record._id)}
+                >delete</i>
+
+                : <></>
+              } 
+                      </span> {record.text}
+                    
+
+
+                      </h6>
                     )
                   })
                 }
