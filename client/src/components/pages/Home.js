@@ -105,9 +105,7 @@ const Home = () => {
               }
 
               <h5 style={{ padding: "5px" }}>
-                <Link to={item.postedBy._id !== state._id ? "/profile/" + item.postedBy._id : "/profile"}>
                   {item.postedBy.name}
-                </Link>
               </h5>
 
               <div className="card-image">
@@ -145,6 +143,7 @@ const Home = () => {
                 <form onSubmit={(e) => {
                   e.preventDefault()
                   makeComment(e.target[0].value, item._id)
+                  e.target[0].value=""
                 }}>
                   <div className="card-action">
                     <input type="text" placeholder="add a comment" />

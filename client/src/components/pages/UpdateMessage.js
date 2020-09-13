@@ -157,7 +157,7 @@ const UpdateMessage = () => {
         >
             <div>
                 <img style={{ width: "160px", height: "160px", borderRadius: "80px" }}
-                    src={imageSrc ? imageSrc : "loading"}
+                    src={imageSrc}
                 />
 
             </div>
