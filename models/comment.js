@@ -6,8 +6,8 @@ const commentSchema = new mongoose.Schema({
         required:true
     },
     postedBy:{
-       type:ObjectId,
-       ref:"User"
+        type:ObjectId,
+        ref:"User"
     },
     responses:[{
         text:{

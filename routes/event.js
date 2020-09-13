@@ -7,14 +7,15 @@ const Comment = mongoose.model("Comment")
 
 
 router.post('/createevent', reqLogin, (req, res) => {
-    const { title, body } = req.body
-    if (!title || !body) {
+    const { title, body, photo } = req.body
+    if (!title || !body || !photo) {
         return res.status(422).json({ error: "Plase add all the fields" })
     }
     req.user.password = undefined
     const event = new Event({
         title,
         body,
+        photo,
         postedBy: req.user
     })
     event.save().then(result => {
@@ -27,9 +28,15 @@ router.post('/createevent', reqLogin, (req, res) => {
 
 router.get('/allevents', reqLogin, (req, res) => {
     Event.find()
-        .populate("postedBy", "_id name")
-        .populate("comments.postedBy", "_id name")
-        .populate("comments.responses.postedBy", "_id name")
+    .populate('postedBy','_id name')
+    .populate({
+        path: 'comments',
+        populate: { path: 'comments', model: 'Comment', select: '_id text' }
+    }).populate({
+        path: 'comments',
+        populate: { path: 'postedBy', model: 'User', select: '_id name' },
+
+    })
         .then((events) => {
             res.json({ events })
         }).catch(err => {
@@ -39,10 +46,15 @@ router.get('/allevents', reqLogin, (req, res) => {
 })
 
 router.get('/myevents', reqLogin, (req, res) => {
-    Event.find({ postedBy: req.user._id })
-        .populate("postedBy", "_id name")
-        .populate("comments.postedBy", "_id name")
-        .populate("comments.responses.postedBy", "_id name")
+    Event.find({ postedBy: req.user._id }).
+        populate({
+            path: 'comments',
+            populate: { path: 'comments', model: 'Comment', select: '_id text' }
+        }).populate({
+            path: 'comments',
+            populate: { path: 'postedBy', model: 'User', select: '_id name' },
+
+        })
         .then((myevents) => {
             res.json({ myevents })
         })
@@ -65,9 +77,15 @@ router.put('/comment', reqLogin, (req, res) => {
             $push: { comments: result }
         }, {
             new: true
-        })
-            .populate("comments.postedBy", "_id name")
-            .populate("postedBy", "_id name")
+        }).
+            populate({
+                path: 'comments',
+                populate: { path: 'comments', model: 'Comment', select: '_id text' }
+            }).populate({
+                path: 'comments',
+                populate: { path: 'postedBy', model: 'User', select: '_id name' },
+
+            })
             .exec((err, result) => {
                 if (err) {
                     return res.status(422).json({ error: err })
@@ -95,16 +113,22 @@ router.put('/response', reqLogin, (req, res) => {
         $push: { responses: response }
     }, {
         new: true
-    })
-    .populate("responses.postedBy", "_id name")
-    .populate("postedBy", "_id name")
-    .exec((err, result) => {
-        if (err) {
-            return res.status(422).json({ error: err })
-        } else {
-            res.json(result)
-        }
-    })
+    }).
+        populate({
+            path: 'comments',
+            populate: { path: 'comments', model: 'Comment', select: '_id text' }
+        }).populate({
+            path: 'comments',
+            populate: { path: 'postedBy', model: 'User', select: '_id name' },
+
+        })
+        .exec((err, result) => {
+            if (err) {
+                return res.status(422).json({ error: err })
+            } else {
+                res.json(result)
+            }
+        })
 })
 
 router.delete('/deleteevent/:eventId', reqLogin, (req, res) => {
@@ -151,7 +175,7 @@ router.put('/updatecomment/:commentId', reqLogin, (req, res) => {
                 return res.status(422).json({ error: err })
             }
             if (comment.postedBy._id.toString() === req.user._id.toString()) {
-                comment.text= req.body.commentText
+                comment.text = req.body.commentText
                 comment.save()
                     .then(result => {
                         res.json(result)

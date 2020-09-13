@@ -6,6 +6,7 @@ import { BrowserRouter, Route, Switch, useHistory } from 'react-router-dom'
 import Home from './components/pages/Home'
 import Signin from './components/pages/Signin'
 import Signup from './components/pages/Signup'
+import CreateEvent from './components/pages/CreateEvent'
 
 import {reducer,initialState} from './components/reducers/userReducer'
 
@@ -34,6 +35,9 @@ const Routing = () => {
       </Route>
       <Route path="/signup">
         <Signup />
+      </Route>
+      <Route path="/createevent">
+        <CreateEvent />
       </Route>
       
     </Switch>
