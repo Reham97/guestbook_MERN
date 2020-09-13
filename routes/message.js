@@ -2,37 +2,54 @@ const express = require('express')
 const router = express.Router()
 const mongoose = require('mongoose')
 const reqLogin = require('../middleware/reqLogin')
-const Event = mongoose.model("Event")
+const Message = mongoose.model("Message")
 const Comment = mongoose.model("Comment")
 
 
-router.post('/createevent', reqLogin, (req, res) => {
+router.post('/createmessage', reqLogin, (req, res) => {
     const { title, body, photo } = req.body
     if (!title || !body || !photo) {
         return res.status(422).json({ error: "Plase add all the fields" })
     }
     req.user.password = undefined
-    const event = new Event({
+    const message = new Message({
         title,
         body,
         photo,
         postedBy: req.user
     })
-    event.save().then(result => {
-        res.json({ event: result })
+    message.save().then(result => {
+        res.json({ message: result })
     })
         .catch(err => {
             console.log(err)
         })
 })
 
+router.get('/specificmessage/:messageId', reqLogin, (req, res) => {
+    Message.findById(req.params.messageId).
+        populate({
+            path: 'comments',
+            populate: { path: 'comments', model: 'Comment', select: '_id text' }
+        }).populate({
+            path: 'comments',
+            populate: { path: 'postedBy', model: 'User', select: '_id name' },
 
-router.put('/updateeventtitle', reqLogin, (req, res) => {
-    const { title,eventId } = req.body
-    if (!title || !eventId) {
+        })
+        .then((message) => {
+            res.json({ message })
+        })
+        .catch(err => {
+            console.log(err)
+        })
+})
+
+router.put('/updatemessagetitle', reqLogin, (req, res) => {
+    const { title,messageId } = req.body
+    if (!title || !messageId) {
         return res.status(422).json({ error: "plase enter data" })
     }
-    Event.findByIdAndUpdate(eventId, {
+    Message.findByIdAndUpdate(messageId, {
         $set: { title: title }
     }, {
         new: true
@@ -44,20 +61,20 @@ router.put('/updateeventtitle', reqLogin, (req, res) => {
         path: 'comments',
         populate: { path: 'postedBy', model: 'User', select: '_id name' },
     })
-    .then((event) => {
-        res.json({ event })
+    .then((message) => {
+        res.json({ message })
     }).catch(err => {
         console.log(err)
     })
         
 })
 
-router.put('/updateeventbody', reqLogin, (req, res) => {
-    const { body,eventId } = req.body
-    if (!body || !eventId) {
+router.put('/updatemessagebody', reqLogin, (req, res) => {
+    const { body,messageId } = req.body
+    if (!body || !messageId) {
         return res.status(422).json({ error: "plase enter data" })
     }
-    Event.findByIdAndUpdate(eventId, {
+    Message.findByIdAndUpdate(messageId, {
         $set: { body: body }
     }, {
         new: true
@@ -69,20 +86,20 @@ router.put('/updateeventbody', reqLogin, (req, res) => {
         path: 'comments',
         populate: { path: 'postedBy', model: 'User', select: '_id name' },
     })
-    .then((event) => {
-        res.json({ event })
+    .then((message) => {
+        res.json({ message })
     }).catch(err => {
         console.log(err)
     })
         
 })
 
-router.put('/updateeventphoto', reqLogin, (req, res) => {
-    const { photo,eventId } = req.body
-    if (!photo || !eventId) {
+router.put('/updatemessagephoto', reqLogin, (req, res) => {
+    const { photo,messageId } = req.body
+    if (!photo || !messageId) {
         return res.status(422).json({ error: "plase enter data" })
     }
-    Event.findByIdAndUpdate(eventId, {
+    Message.findByIdAndUpdate(messageId, {
         $set: { photo: photo }
     }, {
         new: true
@@ -94,17 +111,15 @@ router.put('/updateeventphoto', reqLogin, (req, res) => {
         path: 'comments',
         populate: { path: 'postedBy', model: 'User', select: '_id name' },
     })
-    .then((event) => {
-        res.json({ event })
+    .then((message) => {
+        res.json({ message })
     }).catch(err => {
         console.log(err)
     })
 })
 
-
-
-router.get('/allevents', reqLogin, (req, res) => {
-    Event.find()
+router.get('/allmessages', reqLogin, (req, res) => {
+    Message.find()
         .populate('postedBy', '_id name')
         .populate({
             path: 'comments',
@@ -114,16 +129,16 @@ router.get('/allevents', reqLogin, (req, res) => {
             populate: { path: 'postedBy', model: 'User', select: '_id name' },
 
         })
-        .then((events) => {
-            res.json({ events })
+        .then((messages) => {
+            res.json({ messages })
         }).catch(err => {
             console.log(err)
         })
 
 })
 
-router.get('/myevents', reqLogin, (req, res) => {
-    Event.find({ postedBy: req.user._id }).
+router.get('/mymessages', reqLogin, (req, res) => {
+    Message.find({ postedBy: req.user._id }).
         populate({
             path: 'comments',
             populate: { path: 'comments', model: 'Comment', select: '_id text' }
@@ -132,8 +147,8 @@ router.get('/myevents', reqLogin, (req, res) => {
             populate: { path: 'postedBy', model: 'User', select: '_id name' },
 
         })
-        .then((myevents) => {
-            res.json({ myevents })
+        .then((mymessages) => {
+            res.json({ mymessages })
         })
         .catch(err => {
             console.log(err)
@@ -141,8 +156,8 @@ router.get('/myevents', reqLogin, (req, res) => {
 })
 
 router.put('/comment', reqLogin, (req, res) => {
-    const { text, eventId } = req.body
-    if (!text || !eventId) {
+    const { text, messageId } = req.body
+    if (!text || !messageId) {
         return res.status(422).json({ error: "Plase add all the fields" })
     }
     const comment = new Comment({
@@ -150,7 +165,7 @@ router.put('/comment', reqLogin, (req, res) => {
         postedBy: req.user
     })
     comment.save().then(result => {
-        Event.findByIdAndUpdate(req.body.eventId, {
+        Message.findByIdAndUpdate(req.body.messageId, {
             $push: { comments: result }
         }, {
             new: true
@@ -176,47 +191,15 @@ router.put('/comment', reqLogin, (req, res) => {
         })
 })
 
-router.put('/response', reqLogin, (req, res) => {
-    const { text, commentId } = req.body
-    if (!text || !commentId) {
-        return res.status(422).json({ error: "Plase add all the fields" })
-    }
-    const response = {
-        text,
-        postedBy: req.user
-    }
-
-    Comment.findByIdAndUpdate(req.body.commentId, {
-        $push: { responses: response }
-    }, {
-        new: true
-    }).
-        populate({
-            path: 'comments',
-            populate: { path: 'comments', model: 'Comment', select: '_id text' }
-        }).populate({
-            path: 'comments',
-            populate: { path: 'postedBy', model: 'User', select: '_id name' },
-
-        })
-        .exec((err, result) => {
-            if (err) {
-                return res.status(422).json({ error: err })
-            } else {
-                res.json(result)
-            }
-        })
-})
-
-router.delete('/deleteevent/:eventId', reqLogin, (req, res) => {
-    Event.findOne({ _id: req.params.eventId })
+router.delete('/deletemessage/:messageId', reqLogin, (req, res) => {
+    Message.findOne({ _id: req.params.messageId })
         .populate("postedBy", "_id")
-        .exec((err, event) => {
-            if (err || !event) {
+        .exec((err, message) => {
+            if (err || !message) {
                 return res.status(422).json({ error: err })
             }
-            if (event.postedBy._id.toString() === req.user._id.toString()) {
-                event.remove()
+            if (message.postedBy._id.toString() === req.user._id.toString()) {
+                message.remove()
                     .then(result => {
                         res.json(result)
                     }).catch(err => {

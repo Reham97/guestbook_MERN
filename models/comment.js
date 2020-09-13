@@ -9,18 +9,7 @@ const commentSchema = new mongoose.Schema({
         type:ObjectId,
         ref:"User"
     },
-    responses:[{
-        text:{
-            type:String,
-            required:true
-        },
-        postedBy:{
-           type:ObjectId,
-           ref:"User"
-        },
-    }]
  
-
 },{timestamps:true})
 
 mongoose.model("Comment",commentSchema)

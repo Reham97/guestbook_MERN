@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 const {ObjectId} = mongoose.Schema.Types
-const eventSchema = new mongoose.Schema({
+const messageSchema = new mongoose.Schema({
     title:{
         type:String,
         required:true
@@ -23,4 +23,4 @@ const eventSchema = new mongoose.Schema({
 
 },{timestamps:true})
 
-mongoose.model("Event",eventSchema) 
+mongoose.model("Message",messageSchema) 

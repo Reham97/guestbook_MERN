@@ -7,11 +7,11 @@ const {MONGOURI}=require('./keys')
 
 require('./models/user')
 require('./models/comment')
-require('./models/event')
+require('./models/message')
 
 app.use(express.json())
 app.use(require('./routes/auth'));
-app.use(require('./routes/event'));
+app.use(require('./routes/message'));
 
 mongoose.connect(MONGOURI,{
     useNewUrlParser:true,

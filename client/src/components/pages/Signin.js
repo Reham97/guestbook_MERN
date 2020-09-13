@@ -42,7 +42,7 @@ const Signin = () => {
   return (
     <div className="mycard">
       <div className="card auth-card">
-        <h2>Wellcome Back</h2>
+        <h2>Wellcome</h2> <h2> Back</h2>
         <input
           type="text"
           placeholder="email"

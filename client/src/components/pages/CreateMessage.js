@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom'
 import materialize from 'materialize-css'
 import {IMGURI} from '../../keys'
 
-const CreateEvent = () => {
+const CreateMessage = () => {
     const history = useHistory()
     const [title, setTitle] = useState("")
     const [body, setBody] = useState("")
@@ -13,7 +13,7 @@ const CreateEvent = () => {
 
     useEffect(() => {
         if (url) {
-            fetch("/createevent", {
+            fetch("/createmessage", {
                 method: "post",
                 headers: {
                     "Content-Type": "application/json",
@@ -40,7 +40,7 @@ const CreateEvent = () => {
         }
     }, [url])
 
-    const eventDetails = () => {
+    const messageDetails = () => {
         const data = new FormData()
         data.append("file", image)
         data.append("upload_preset", "guestBook-mern")
@@ -94,13 +94,13 @@ const CreateEvent = () => {
                 </div>
             </div>
             <button className="btn waves-effect waves-light #64b5f6 blue darken-1"
-                onClick={() => eventDetails()}
+                onClick={() => messageDetails()}
             >
-                Submit Event
+                Submit Message
            </button>
 
         </div>
 
     )
 }
-export default CreateEvent
+export default CreateMessage

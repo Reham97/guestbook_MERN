@@ -7,19 +7,19 @@ const Home = () => {
   const [comments, setComments] = useState([])
   const { state, dispatch } = useContext(UserContext)
   useEffect(() => {
-    fetch('/allevents', {
+    fetch('/allmessages', {
       headers: {
         "Authorization": "Bearer " + localStorage.getItem("guestBook-jwt")
       }
     }).then(res => res.json())
       .then(result => {
         console.log(result)
-        setData(result.events)
+        setData(result.messages)
       })
   }, [])
 
-  const deleteEvent = (eventid) => {
-    fetch(`/deleteevent/${eventid}`, {
+  const deleteMessage = (messageid) => {
+    fetch(`/deletemessage/${messageid}`, {
       method: "delete",
       headers: {
         Authorization: "Bearer " + localStorage.getItem("guestBook-jwt")
@@ -34,7 +34,7 @@ const Home = () => {
       })
   }
 
-  const makeComment = (text, eventId) => {
+  const makeComment = (text, messageId) => {
     fetch('/comment', {
       method: "put",
       headers: {
@@ -42,7 +42,7 @@ const Home = () => {
         "Authorization": "Bearer " + localStorage.getItem("guestBook-jwt")
       },
       body: JSON.stringify({
-        eventId,
+        messageId,
         text
       })
     }).then(res => res.json())
@@ -69,14 +69,14 @@ const Home = () => {
       }
     }).then(res => res.json())
       .then(result => {
-        fetch('/allevents', {
+        fetch('/allmessages', {
           headers: {
             "Authorization": "Bearer " + localStorage.getItem("guestBook-jwt")
           }
         }).then(res => res.json())
           .then(result => {
             console.log(result)
-            setData(result.events)
+            setData(result.messages)
           })
       })
   }
@@ -93,13 +93,13 @@ const Home = () => {
                 <i className="material-icons hand" style={{
                   float: "right"
                 }}
-                  onClick={() => deleteEvent(item._id)}
+                  onClick={() => deleteMessage(item._id)}
                 >delete</i>
+               <Link to={"/updatemessage/"+item._id}> 
                 <i className="material-icons hand" style={{
                   float: "right"
                 }}
-                  onClick={() => deleteEvent(item._id)}
-                >edit</i>
+                >edit</i></Link>
                 </>
                 : <></>
               }
