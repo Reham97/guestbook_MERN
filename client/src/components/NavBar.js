@@ -1,10 +1,20 @@
 import React, { useContext } from 'react'
-import {Link ,useHistory} from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import { UserContext } from '../App'
 const Navbar = () => {
     const history = useHistory()
     const { state, dispatch } = useContext(UserContext)
-    
+
+    const renderName = () => {
+        console.log(state)
+        if (state) {
+            return <ul id="nav-mobile" className="left hide-on-med-and-down" style={{marginLeft:"10%"}}>{state ? "Hi " + state.name : ""}</ul>
+
+        }
+
+
+    }
+
     const renderList = () => {
         console.log(state)
         if (state) {
@@ -36,8 +46,9 @@ const Navbar = () => {
         <nav>
             <div className="nav-wrapper">
                 <Link to={state ? "/" : "signin"} className="brand-logo" >
-                    <img src="http://res.cloudinary.com/software1997/image/upload/v1599995809/date8bivdx6tibh5bvsb.webp" width="100px" height="60px"/>
+                    <img src="http://res.cloudinary.com/software1997/image/upload/v1599995809/date8bivdx6tibh5bvsb.webp" width="100px" height="60px" />
                 </Link>
+                {renderName()}
                 <ul id="nav-mobile" className="right hide-on-med-and-down">
                     {renderList()}
                 </ul>
