@@ -34,7 +34,6 @@ const Home = () => {
       })
   }
 
-
   const makeComment = (text, eventId) => {
     fetch('/comment', {
       method: "put",
@@ -60,6 +59,7 @@ const Home = () => {
         console.log(err)
       })
   }
+
 
   const deleteComment = (commentid) => {
     fetch(`/deletecomment/${commentid}`, {
@@ -89,12 +89,18 @@ const Home = () => {
           return (
             <div className="card home-card" key={item._id}>
               {item.postedBy._id == state._id
-                ? <i className="material-icons hand" style={{
+                ? <>
+                <i className="material-icons hand" style={{
                   float: "right"
                 }}
                   onClick={() => deleteEvent(item._id)}
                 >delete</i>
-
+                <i className="material-icons hand" style={{
+                  float: "right"
+                }}
+                  onClick={() => deleteEvent(item._id)}
+                >edit</i>
+                </>
                 : <></>
               }
 
@@ -150,7 +156,9 @@ const Home = () => {
             </div>
           )
         })
-      }
+     
+     
+     }
 
 
     </div>

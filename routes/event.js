@@ -26,6 +26,83 @@ router.post('/createevent', reqLogin, (req, res) => {
         })
 })
 
+
+router.put('/updateeventtitle', reqLogin, (req, res) => {
+    const { title,eventId } = req.body
+    if (!title || !eventId) {
+        return res.status(422).json({ error: "plase enter data" })
+    }
+    Event.findByIdAndUpdate(eventId, {
+        $set: { title: title }
+    }, {
+        new: true
+    }).populate('postedBy', '_id name')
+    .populate({
+        path: 'comments',
+        populate: { path: 'comments', model: 'Comment', select: '_id text' }
+    }).populate({
+        path: 'comments',
+        populate: { path: 'postedBy', model: 'User', select: '_id name' },
+    })
+    .then((event) => {
+        res.json({ event })
+    }).catch(err => {
+        console.log(err)
+    })
+        
+})
+
+router.put('/updateeventbody', reqLogin, (req, res) => {
+    const { body,eventId } = req.body
+    if (!body || !eventId) {
+        return res.status(422).json({ error: "plase enter data" })
+    }
+    Event.findByIdAndUpdate(eventId, {
+        $set: { body: body }
+    }, {
+        new: true
+    }).populate('postedBy', '_id name')
+    .populate({
+        path: 'comments',
+        populate: { path: 'comments', model: 'Comment', select: '_id text' }
+    }).populate({
+        path: 'comments',
+        populate: { path: 'postedBy', model: 'User', select: '_id name' },
+    })
+    .then((event) => {
+        res.json({ event })
+    }).catch(err => {
+        console.log(err)
+    })
+        
+})
+
+router.put('/updateeventphoto', reqLogin, (req, res) => {
+    const { photo,eventId } = req.body
+    if (!photo || !eventId) {
+        return res.status(422).json({ error: "plase enter data" })
+    }
+    Event.findByIdAndUpdate(eventId, {
+        $set: { photo: photo }
+    }, {
+        new: true
+    }).populate('postedBy', '_id name')
+    .populate({
+        path: 'comments',
+        populate: { path: 'comments', model: 'Comment', select: '_id text' }
+    }).populate({
+        path: 'comments',
+        populate: { path: 'postedBy', model: 'User', select: '_id name' },
+    })
+    .then((event) => {
+        res.json({ event })
+    }).catch(err => {
+        console.log(err)
+    })
+})
+
+
+
 router.get('/allevents', reqLogin, (req, res) => {
     Event.find()
         .populate('postedBy', '_id name')
